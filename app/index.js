@@ -36,14 +36,7 @@ var AspnetGenerator = yeoman.generators.Base.extend({
         'nancy',
         'classlib',
         'xunit',
-        'mstest',
-        'fsharp_classlib',
-        'fsharp_webapi',
-        'fsharp_console',
-        'fsharp_web',
-        'fsharp_mvcbasic',
-        'fsharp_mstest',
-        'fsharp_xunit'];
+        'mstest'];
 
       if (validProjectTypes.indexOf(this.type) === -1) {
         //if it's not in the list, send them through the normal path
@@ -70,14 +63,8 @@ var AspnetGenerator = yeoman.generators.Base.extend({
             name: 'Empty Web Application',
             value: 'web'
           }, {
-            name: 'Empty Web Application (F#)',
-            value: 'fsharp_web'
-          }, {
             name: 'Console Application',
             value: 'console'
-          }, {
-            name: 'Console Application (F#)',
-            value: 'fsharp_console'
           }, {
             name: 'Web Application',
             value: 'mvc'
@@ -85,14 +72,8 @@ var AspnetGenerator = yeoman.generators.Base.extend({
             name: 'Web Application Basic [without Membership and Authorization]',
             value: 'mvcbasic'
           }, {
-            name: 'Web Application Basic [without Membership and Authorization] (F#)',
-            value: 'fsharp_mvcbasic'
-          }, {
             name: 'Web API Application',
             value: 'webapi'
-          }, {
-            name: 'Web API Application (F#)',
-            value: 'fsharp_webapi'
           }, {
             name: 'Nancy ASP.NET Application',
             value: 'nancy'
@@ -100,20 +81,11 @@ var AspnetGenerator = yeoman.generators.Base.extend({
             name: 'Class Library',
             value: 'classlib'
           }, {
-            name: 'Class Library (F#)',
-            value: 'fsharp_classlib'
-          }, {
             name: 'Unit Test project (MSTest)',
             value: 'mstest'
           }, {
             name: 'Unit Test project (xUnit.net)',
             value: 'xunit'
-          }, {
-            name: 'Unit Test project (MSTest) (F#)',
-            value: 'fsharp_mstest'
-          }, {
-            name: 'Unit Test Project (xUnit.net) (F#)',
-            value: 'fsharp_xunit'
           }
         ]
       },
@@ -194,27 +166,6 @@ var AspnetGenerator = yeoman.generators.Base.extend({
           break;
         case 'xunit':
           app = 'UnitTest';
-          break;
-        case 'fsharp_classlib':
-          app = "ClassLibrary";
-          break;
-        case 'fsharp_console':
-          app = "ConsoleApplication";
-          break;
-        case 'fsharp_webapi':
-          app = "WebAPIApplication";
-          break;
-        case 'fsharp_web':
-          app = "EmptyWebApplication";
-          break;
-        case 'fsharp_mvcbasic':
-          app = "WebApplicationBasic";
-          break;
-        case 'fsharp_mstest':
-          app = "UnitTest";
-          break;
-        case 'fsharp_xunit':
-          app = "UnitTest";
           break;
       }
       var prompts = [{
@@ -392,98 +343,6 @@ var AspnetGenerator = yeoman.generators.Base.extend({
         this.template(this.sourceRoot() + '/../../global.json', this.applicationName + '/global.json', this.templatedata);
         break;
 
-      //F# Cases
-      case 'fsharp_classlib':
-        this.sourceRoot(path.join(__dirname, '../templates/projects/' + this.type));
-        this.copy(this.sourceRoot() + '/../../gitignore.txt', this.applicationName + '/.gitignore');
-        this.template(this.sourceRoot() + '/Library.fs', this.applicationName + '/Library.fs', this.templatedata);
-        this.fs.copyTpl(this.sourceRoot() + '/Company.ClassLibrary1.fsproj', this.applicationName + '/' + this.applicationName + '.fsproj', this.templatedata);
-        this.template(this.sourceRoot() + '/../../global.json', this.applicationName + '/global.json', this.templatedata);
-        break;
-
-      case 'fsharp_console':
-        this.sourceRoot(path.join(__dirname, '../templates/projects/' + this.type));
-        this.fs.copy(path.join(__dirname, '../templates/gitignore.txt'), this.applicationName + '/.gitignore');
-        this.fs.copyTpl(this.templatePath('Program.fs'), this.applicationName + '/Program.fs', this.templatedata);
-        this.fs.copyTpl(this.templatePath('Company.ConsoleApplication1.fsproj'), this.applicationName + '/' + this.applicationName + '.fsproj', this.templatedata);
-        this.template(this.sourceRoot() + '/../../global.json', this.applicationName + '/global.json', this.templatedata);
-        break;
-
-      case 'fsharp_web':
-        this.sourceRoot(path.join(__dirname, '../templates/projects/' + this.type));
-        this.copy(this.sourceRoot() + '/../../gitignore.txt', this.applicationName + '/.gitignore');
-        this.template(this.sourceRoot() + '/Program.fs', this.applicationName + '/Program.fs', this.templatedata);
-        this.template(this.sourceRoot() + '/Startup.fs', this.applicationName + '/Startup.fs', this.templatedata);
-        this.template(this.sourceRoot() + '/Company.WebApplication1.fsproj', this.applicationName + '/' + this.applicationName + '.fsproj', this.templatedata);
-        this.copy(this.sourceRoot() + '/web.config', this.applicationName + '/web.config');
-        /// Properties
-        this.fs.copyTpl(this.templatePath('Properties/**/*'), this.applicationName + '/Properties', this.templatedata);
-        this.fs.copy(this.sourceRoot() + '/README.md', this.applicationName + '/README.md');
-        this.fs.copyTpl(this.templatePath('/runtimeconfig.template.json'), this.applicationName + '/runtimeconfig.template.json', this.templatedata);
-        mkdirp.sync(this.applicationName + '/wwwroot');
-        this.template(this.sourceRoot() + '/../../global.json', this.applicationName + '/global.json', this.templatedata);
-        break;
-
-      case 'fsharp_webapi':
-        this.sourceRoot(path.join(__dirname, '../templates/projects/' + this.type));
-        this.fs.copy(this.sourceRoot() + '/../../gitignore.txt', this.applicationName + '/.gitignore');
-        this.copy(this.sourceRoot() + '/appsettings.json', this.applicationName + '/appsettings.json');
-        this.copy(this.sourceRoot() + '/appsettings.Development.json', this.applicationName + '/appsettings.Development.json');
-        this.fs.copyTpl(this.sourceRoot() + '/Startup.fs', this.applicationName + '/Startup.fs', this.templatedata);
-        this.fs.copyTpl(this.sourceRoot() + '/Program.fs', this.applicationName + '/Program.fs', this.templatedata);
-        this.fs.copyTpl(this.sourceRoot() + '/Company.WebApplication1.fsproj', this.applicationName + '/' + this.applicationName + '.fsproj', this.templatedata);
-        this.fs.copyTpl(this.templatePath('Properties/**/*'), this.applicationName + '/Properties', this.templatedata);
-        this.fs.copyTpl(this.templatePath() + '/Controllers/**/*', this.applicationName + '/Controllers', this.templatedata);
-        this.fs.copy(this.sourceRoot() + '/web.config', this.applicationName + '/web.config');
-        this.fs.copy(this.sourceRoot() + '/README.md', this.applicationName + '/README.md');
-        this.fs.copy(this.sourceRoot() + '/runtimeconfig.template.json', this.applicationName + '/runtimeconfig.template.json');
-        this.template(this.sourceRoot() + '/../../global.json', this.applicationName + '/global.json', this.templatedata);
-        break;
-
-      case 'fsharp_mvcbasic':
-        this.sourceRoot(path.join(__dirname, '../templates/projects/' + this.type));
-        // individual files (configs, etc)
-        this.fs.copy(this.templatePath('.bowerrc'), this.applicationName + '/.bowerrc');
-        this.fs.copy(this.templatePath('bundleconfig.json'), this.applicationName + '/bundleconfig.json');
-        this.fs.copy(this.sourceRoot() + '/../../gitignore.txt', this.applicationName + '/.gitignore');
-        this.fs.copyTpl(this.templatePath('bower.json'), this.applicationName + '/bower.json', this.templatedata);
-        this.fs.copyTpl(this.templatePath('appsettings.json'), this.applicationName + '/appsettings.json', this.templatedata);
-        this.fs.copyTpl(this.templatePath('appsettings.Development.json'), this.applicationName + '/appsettings.Development.json', this.templatedata);
-        this.fs.copyTpl(this.templatePath('Company.WebApplication1.fsproj'), this.applicationName + '/' + this.applicationName + '.fsproj', this.templatedata);
-        this.fs.copyTpl(this.templatePath('Program.fs'), this.applicationName + '/Program.fs', this.templatedata);
-        // Properties
-        this.fs.copyTpl(this.templatePath('Properties/**/*'), this.applicationName + '/Properties', this.templatedata);
-        this.fs.copy(this.templatePath('README.md'), this.applicationName + '/README.md');
-        this.fs.copyTpl(this.templatePath('Startup.fs'), this.applicationName + '/Startup.fs', this.templatedata);
-        this.fs.copyTpl(this.templatePath('web.config'), this.applicationName + '/web.config', this.templatedata);
-        // Controllers
-        this.fs.copyTpl(this.templatePath('Controllers/**/*'), this.applicationName + '/Controllers', this.templatedata);
-        // Views
-        this.fs.copyTpl(this.templatePath('Views/**/*'), this.applicationName + '/Views', this.templatedata);
-
-        // wwwroot - the content in the wwwroot does not include any direct references or imports
-        // So again it is copied 1-to-1 - but tests cover list of all files
-        this.fs.copy(this.templatePath('wwwroot/**/*'), this.applicationName + '/wwwroot');
-        this.template(this.sourceRoot() + '/../../global.json', this.applicationName + '/global.json', this.templatedata);
-        break;
-
-      case 'fsharp_xunit':
-        this.sourceRoot(path.join(__dirname, '../templates/projects/' + this.type));
-        this.copy(this.sourceRoot() + '/../../gitignore.txt', this.applicationName + '/.gitignore');
-        this.fs.copyTpl(this.templatePath('Company.TestProject1.fsproj'), this.applicationName + '/' + this.applicationName + '.fsproj', this.templatedata);
-        this.fs.copyTpl(this.templatePath('Tests.fs'), this.applicationName + '/Tests.fs', this.templatedata);
-        this.fs.copy(this.sourceRoot() + '/xunit.runner.json', this.applicationName + '/xunit.runner.json');
-        this.template(this.sourceRoot() + '/../../global.json', this.applicationName + '/global.json', this.templatedata);
-        break;
-
-      case 'fsharp_mstest':
-        this.sourceRoot(path.join(__dirname, '../templates/projects/' + this.type));
-        this.copy(this.sourceRoot() + '/../../gitignore.txt', this.applicationName + '/.gitignore');
-        this.fs.copyTpl(this.templatePath('Company.TestProject1.fsproj'), this.applicationName + '/' + this.applicationName + '.fsproj', this.templatedata);
-        this.fs.copyTpl(this.templatePath('Tests.fs'), this.applicationName + '/Tests.fs', this.templatedata);
-        this.fs.copy(this.sourceRoot() + '/xunit.runner.json', this.applicationName + '/xunit.runner.json');
-        this.template(this.sourceRoot() + '/../../global.json', this.applicationName + '/global.json', this.templatedata);
-        break;
 
       default:
         this.log('Unknown project type');
@@ -499,7 +358,7 @@ var AspnetGenerator = yeoman.generators.Base.extend({
    * --skip-install option
    */
   end: function() {
-    if(!this.options['skip-install'] && (this.type === 'mvc' || this.type === 'mvcbasic' || this.type === "fsharp_mvcbasic")) {
+    if(!this.options['skip-install'] && (this.type === 'mvc' || this.type === 'mvcbasic')) {
       process.chdir(this.applicationName);
       this.installDependencies({
         npm: false,
@@ -533,15 +392,9 @@ var AspnetGenerator = yeoman.generators.Base.extend({
       case 'mvc':
       case 'webapi':
       case 'mvcbasic':
-      case 'fsharp_console':
-      case 'fsharp_webapi':
-      case 'fsharp_mvcbasic':
-      case 'fsharp_web':
         this.log(chalk.green('    dotnet run'));
         break;
       case 'xunit':
-      case 'fsharp_mstest':
-      case 'fsharp_xunit':
         this.log(chalk.green('    dotnet test'));
         break;
     }
